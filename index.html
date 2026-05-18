@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kado Spesial Untuk Cinta</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* Musik / Audio Controls */
+        #music-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            backdrop-filter: blur(5px);
+        }
+
+        .screen {
+            display: none;
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        button.btn-utama {
+            background: #ff758c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 117, 140, 0.4);
+        }
+
+        button.btn-utama:hover {
+            background: #ff7eb3;
+            transform: scale(1.05);
+        }
+
+        /* Screen 1: Welcome */
+        .welcome-gift {
+            font-size: 80px;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        /* Screen 2: Game */
+        .grid-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .card {
+            height: 70px;
+            background: #434343;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            user-select: none;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+            background: #ff758c;
+        }
+
+        /* Screen 3: Wish & Lilin */
+        .cake-container {
+            position: relative;
+            margin: 30px auto;
+            width: 150px;
+        }
+        .cake {
+            font-size: 80px;
+        }
+        .flame {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: flicker 0.5s infinite alternate;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(0.9) skewX(-2deg); }
+            100% { transform: translateX(-50%) scale(1.1) skewX(2deg); }
+        }
+
+        /* Screen 4: Surat Ucapan */
+        .surat {
+            text-align: left;
+            line-height: 1.6;
+            font-size: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .surat::-webkit-scrollbar {
+            width: 5px;
+        }
+        .surat::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        /* Efek Kupu-kupu & Bunga */
+        .butterfly {
+            position: fixed;
+            font-size: 20px;
+            pointer-events: none;
+            z-index: 999;
+            animation: fly 4s linear forwards;
+        }
+        @keyframes fly {
+            0% { transform: translateY(100vh) translateX(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) translateX(100px) rotate(360deg); opacity: 0; }
+        }
+
+        .flower-garden {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .flower {
+            font-size: 40px;
+            transform: scale(0);
+            animation: bloom 1s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes bloom {
+            to { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="music-container">
+        <button class="music-btn" onclick="toggleMusic()">🎵</button>
+    </div>
+
+    <audio id="bgSong" loop>
+        <source src="https://files.catbox.moe/kfytyu.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="screen1" class="screen active">
+        <h2>Selamat Datang! ✨</h2>
+        <p style="margin: 15px 0;">Ada kiriman kado spesial nih buat kamu.</p>
+        <div class="welcome-gift" onclick="bukaKado()">🎁</div>
+        <p style="font-size: 12px; color: #ddd; margin-top: 15px;">Klik kadonya yaa...</p>
+    </div>
+
+    <div id="screen2" class="screen">
+        <h3>A Little Game for You 🎁</h3>
+        <p style="font-size: 14px; margin-top: 5px;">Balik 2 Kartu yang Sama!</p>
+        <div class="grid-game" id="gameGrid"></div>
+    </div>
+
+    <div id="screen3" class="screen">
+        <h3>Make a Wish 🎉</h3>
+        <p style="font-size: 14px; margin: 10px 0;">Tutup matamu, buat permintaan, lalu tiup lilinnya yaw!</p>
+        <div class="cake-container" onclick="tiupLilin()">
+            <div class="flame" id="lilin-api">🔥</div>
+            <div class="cake">🎂</div>
+        </div>
+        <button class="btn-utama" onclick="tiupLilin()">Tiup Lilin 💨</button>
+    </div>
+
+    <div id="screen4" class="screen">
+        <h2 style="color: #ff758c; margin-bottom: 15px;">Happy Birthday, Cinta! 🥳✨</h2>
+        <div class="surat">
+            <p>Hari ini adalah momen yang penuh arti, karena seseorang yang sangat spesial sedang merayakan hari kelahirannya. ❤️</p><br>
+            <p>Kita <i>make a wish</i> di hari ulang tahunmu ini yaa moga kamu selalu diberi kesehatan, hati yang tenang, dan langkah yang dimudahkan dalam setiap rencana baikmu serta kebahagiaan selalu menyertaimu. 🤲🌟</p><br>
+            <p>Semoga di usia yang baru ini, kamu makin kuat, makin sabar, dan makin percaya sama diri sendiri. Apa pun yang kamu impikan, pelan-pelan semoga satu per satu bisa terwujud dengan cara terbaik. 💕</p><br>
+            <p>Semangat terus buat kejar semua keinginan kamu, jangan pernah takut gagal yaa, aku selalu dukung kamu dan support kamu di sini. Oh ya, jangan lupa untuk selalu bersyukur yaa! 💫💐</p><br>
+            <p>Terakhir,</p>
+            <p><b>Happy Level Up Day 🎂 And... Have a Fabulous Birthday! 🎉</b></p>
+        </div>
+        
+        <div class="flower-garden" id="garden" style="display:none;">
+            <div class="flower" style="animation-delay: 0.2s;">🌸</div>
+            <div class="flower" style="animation-delay: 0.5s;">🌹</div>
+            <div class="flower" style="animation-delay: 0.8s;">🌺</div>
+        </div>
+
+        <button class="btn-utama" id="btn-akhir" onclick="munculkanBunga()">Terima Kasih ❤️</button>
+    </div>
+
+    <script>
+        const song = document.getElementById('bgSong');
+        let musicPlaying = false;
+
+        function playMusic() {
+            if(!musicPlaying) {
+                song.play().catch(e => console.log("User interaction required for audio"));
+                musicPlaying = true;
+            }
+        }
+
+        function toggleMusic() {
+            if (song.paused) {
+                song.play();
+            } else {
+                song.pause();
+            }
+        }
+
+        function changeScreen(current, next) {
+            document.getElementById('screen' + current).classList.remove('active');
+            document.getElementById('screen' + next).classList.add('active');
+        }
+
+        // Screen 1 -> 2
+        function bukaKado() {
+            playMusic();
+            changeScreen(1, 2);
+            initGame();
+        }
+
+        // Screen 2: Game Logic
+        const emojis = ['❤️', '🌸', '🥳', '🎁', '❤️', '🌸', '🥳', '🎁', '⭐', '🦄', '⭐', '🦄'];
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function initGame() {
+            const grid = document.getElementById('gameGrid');
+            // Acak kartu
+            const shuffled = emojis.sort(() => 0.5 - Math.random());
+            
+            shuffled.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.addEventListener('click', flipCard);
+                grid.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (flippedCards.length < 2 && !this.classList.contains('flipped')) {
+                this.classList.add('flipped');
+                this.innerText = this.dataset.emoji;
+                flippedCards.push(this);
+
+                if (flippedCards.length === 2) {
+                    setTimeout(checkMatch, 600);
+                }
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.emoji === card2.dataset.emoji) {
+                matchedPairs++;
+                if (matchedPairs === emojis.length / 2) {
+                    setTimeout(() => {
+                        changeScreen(2, 3);
+                    }, 1000);
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+                card1.innerText = '';
+                card2.innerText = '';
+            }
+            flippedCards = [];
+        }
+
+        // Screen 3 -> 4
+        function tiupLilin() {
+            document.getElementById('lilin-api').style.display = 'none';
+            // Efek transisi setelah ditiup
+            setTimeout(() => {
+                changeScreen(3, 4);
+                startButterflies();
+            }, 1000);
+        }
+
+        // Screen 4 Efek Tambahan
+        function startButterflies() {
+            setInterval(() => {
+                const b = document.createElement('div');
+                b.classList.add('butterfly');
+                b.innerText = '🦋';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 5000);
+            }, 400);
+        }
+
+        function munculkanBunga() {
+            document.getElementById('garden').style.display = 'flex';
+            document.getElementById('btn-akhir').innerText = "Spesial untuk Cinta ✨";
+        }
+    </script>
+</body>
+</html>
